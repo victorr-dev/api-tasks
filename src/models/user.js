@@ -1,6 +1,5 @@
-const mongoose = require('mongoose')
+const {Schema, model} = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
-const Schema = mongoose.Schema
 
 const userSchema = new Schema({
     name:{
@@ -33,4 +32,4 @@ userSchema.methods.toJSON = function () {
     return userObject
 }
 
-module.exports = mongoose.model('user', userSchema)
+module.exports = model('user', userSchema)
