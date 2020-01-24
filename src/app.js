@@ -1,9 +1,11 @@
 const app = require('./server')
+const {PORT} = require('./config')
 
 async function main(){
-    await app.listen(3000)
+    await app.connectDb()
+    await app.listen(PORT)
 
-    console.log(`Server is running in port: 3000`)
+    console.log(`Server is running in port: ${PORT}`)
 }
 
 main()

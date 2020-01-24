@@ -1,15 +1,40 @@
 const express = require('express')
+const mongoose = require('mongoose')
+const morgan = require('morgan')
+const { URL } = require('./config')
 const app = express()
 
-app.get('/', (req,res,next)=> {
-    res.send({
-        success:true,
-        message: 'Init project'
+//Middlewares
+app.use(express.urlencoded({ extended: true }))
+app.use(morgan('dev'))
+
+//Load Routes
+require('./routes')(app)
+//Handle Errors
+app.use(errorHandler)
+
+function errorHandler(err, req, res, next) {
+  if (err.message.match(/not found/)) {
+    return res.status(404).send({
+      success: false,
+      error: err.message
     })
-})
+  }
+  res.status(500).send({
+    success: false,
+    error: err.message
+  })
+}
 
-function errorHandler(err, req, res, next){
-
+app.connectDb = async () => {
+  const configConnection = { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }
+  try {
+    await mongoose.connect(URL, configConnection)
+    console.log('Conexion establecida a la base de datos')
+  } catch (error) {
+    console.error(error.reason)
+    process.exit(1)
+  }
 }
 
 module.exports = app
