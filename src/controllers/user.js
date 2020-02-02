@@ -6,7 +6,7 @@ controller.getUser = async (req, res, next) => {
         const users = await User.find({state:true})
         if(users.length === 0) return next(Error('User not found'))
 
-        res.send({
+       return res.send({
             success:true,
             users
         })
@@ -45,7 +45,7 @@ controller.putUser = async(req, res, next) => {
         let result = await User.findByIdAndUpdate(id,user,{new:true, runValidators:true})
         res.send({
             success:true,
-            usuario: result
+            user: result
         })
     } catch (error) {
         return next(Error(error.message))
@@ -61,7 +61,7 @@ controller.deleteUser = async(req, res, next)=>{
         if(!result) return next(Error('User not found'))
         res.json({
             success:true,
-            usuario: result
+            user: result
         })
     } catch (error) {
         return next(Error(error.message))

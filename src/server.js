@@ -10,6 +10,7 @@ app.use(morgan('dev'))
 
 //Load Routes
 require('./routes')(app)
+//app.use(require('./routes/user'))
 //Handle Errors
 app.use(errorHandler)
 
@@ -31,6 +32,10 @@ app.connectDb = async () => {
   try {
     await mongoose.connect(URL, configConnection)
     console.log('Conexion establecida a la base de datos')
+    if(process.env.NODE_ENV === 'test'){
+      await mongoose.connection.db.dropDatabase()
+      console.log('Clear Database');
+    }
   } catch (error) {
     console.error(error.reason)
     process.exit(1)

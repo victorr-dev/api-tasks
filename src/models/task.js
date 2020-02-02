@@ -3,11 +3,11 @@ const {Schema, model} = require('mongoose')
 const TaskSchema = new Schema({
     description: {
         type:String,
-        required:true
+        required:[true, 'La descripcion es requerida']
     },
     priority: {
         type:Number,
-        required: true,
+        default:1,
         enum:[5,4,3,2,1]
     },
     user: {
