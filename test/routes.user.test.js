@@ -1,11 +1,12 @@
 const request = require('supertest')
 const app = require('../src/server')
 
-const user = {
+let user = {
   name:'Victor Ruiz',
   email:'victor.ruiz@axity.com',
   password:'ejemplo'
 }
+
 const project = {
   name: 'Separación RMS Colombia'
 }
@@ -15,7 +16,7 @@ const task = {
   priority:3
 }
 
-describe('User points', () => {
+describe('Test Routes', () => {
 
   beforeAll(async () => {
     await app.connectDb()
@@ -53,7 +54,6 @@ describe('User points', () => {
     const res = await request(app)
                       .put(`/user/${user.id}`)
                       .send(`name=${user.name} - test`)
-                      .send(`password=${user.password}`)
                       .send(`state=true`)
                       .set('Accept', 'application/json')
     expect(res.status).toBe(200)
@@ -139,5 +139,16 @@ describe('User points', () => {
     const res = await request(app).get('/task')
     expect(res.status).toBe(200)
     done();
+  })
+
+  it('Test login', async (done)=>{
+    const res = await request(app)
+                      .post('/login')
+                      .send(`email=${user.email}`)
+                      .send(`password=${user.password}`)
+                      .set('Accept', 'application/json')
+    expect(res.status).toBe(200)
+    expect(res.body.success).toBe(true)
+    done()
   })
 })

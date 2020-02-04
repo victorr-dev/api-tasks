@@ -20,10 +20,10 @@ controller.postUser = async(req,res, next) => {
     try {
         const user = new User({
             name,
-            email,
-            password
+            email
         })
 
+        user.password = await user.encryptPassword(password)
         const userSave = await user.save()
 
         res.send({

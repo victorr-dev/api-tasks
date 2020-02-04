@@ -1,12 +1,15 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
+const cors = require('cors')
 const { URL } = require('./config')
 const app = express()
+app.use(cors())
 
 //Middlewares
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
+app.use(express.json())
 
 //Load Routes
 require('./routes')(app)
@@ -16,7 +19,7 @@ app.use(errorHandler)
 
 function errorHandler(err, req, res, next) {
   if (err.message.match(/not found/)) {
-    return res.status(404).send({
+    return res.send({
       success: false,
       error: err.message
     })

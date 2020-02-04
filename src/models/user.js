@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose')
+const bcrypt = require('bcrypt')
 const uniqueValidator = require('mongoose-unique-validator')
 
 const userSchema = new Schema({
@@ -22,6 +23,15 @@ const userSchema = new Schema({
 })
 
 userSchema.plugin(uniqueValidator, '{PATH} debe de ser único')
+
+userSchema.methods.encryptPassword = async (password) => {
+    const salt = await bcrypt.genSalt(10)
+    return bcrypt.hash(password, salt)
+}
+
+userSchema.methods.comparePassword = async function (password) {
+    return bcrypt.compare(password, this.password)
+}
 
 userSchema.methods.toJSON = function () {
     let user = this
