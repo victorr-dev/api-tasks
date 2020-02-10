@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node src/app",
     "dev": "nodemon src/app",
     "test": "jest --testTimeout=10000 --runInBand --forceExit"
   },
