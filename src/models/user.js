@@ -1,6 +1,7 @@
 const {Schema, model} = require('mongoose')
 const bcrypt = require('bcrypt')
 const uniqueValidator = require('mongoose-unique-validator')
+const { getDate } = require('../utils/date-util')
 
 const userSchema = new Schema({
     name:{
@@ -19,6 +20,10 @@ const userSchema = new Schema({
     state: {
         type: Boolean,
         default: true
+    },
+    created: {
+        type: String,
+        default: getDate()
     }
 })
 
