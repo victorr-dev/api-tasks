@@ -3,7 +3,7 @@ const controller = {}
 
 controller.getTask = async (req, res, next) => {
     try {
-        const tasks = await Task.find({state:true}).populate('user')
+        const tasks = await Task.find({state:true}).populate('project', 'name')
         if(tasks.length === 0) return next(Error('Tasks not found'))
 
         res.send({
