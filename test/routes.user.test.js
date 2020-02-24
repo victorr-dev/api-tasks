@@ -106,7 +106,7 @@ describe('Test Routes', () => {
                       .send(`description=${task.description}`)
                       .send(`priority=${task.priority}`)
                       .send(`user=${user.id}`)
-                      .send(`project=${user.id}`)
+                      .send(`project=${project.id}`)
                       .set('Accept', 'application/json')
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)

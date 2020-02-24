@@ -13,7 +13,7 @@ app.use(express.json())
 
 //Load Routes
 require('./routes')(app)
-//app.use(require('./routes/user'))
+
 //Handle Errors
 app.use(errorHandler)
 
@@ -24,7 +24,7 @@ function errorHandler(err, req, res, next) {
       error: err.message
     })
   }
-  res.status(500).send({
+  res.status(400).send({
     success: false,
     error: err.message
   })
