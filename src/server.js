@@ -19,12 +19,12 @@ app.use(errorHandler)
 
 function errorHandler(err, req, res, next) {
   if (err.message.match(/not found/)) {
-    return res.send({
+    return res.status(400) ({
       success: false,
       error: err.message
     })
   }
-  res.status(400).send({
+  res.status(500).send({
     success: false,
     error: err.message
   })
