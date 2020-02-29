@@ -24,6 +24,14 @@ function errorHandler(err, req, res, next) {
       error: err.message
     })
   }
+
+  if (err.message.match(/Not Authorize/)) {
+    return res.status(401).send({
+      success: false,
+      error: err.message
+    })
+  }
+
   res.status(500).send({
     success: false,
     error: err.message
