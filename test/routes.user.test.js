@@ -40,11 +40,10 @@ describe('Test Routes', () => {
                       .set('Accept', 'application/json')
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
-
     user.token = res.body.token
     done()
   })
-
+  
   it('should create an user', async (done)=>{
     const res = await request(app)
                       .post('/user')
@@ -140,13 +139,13 @@ describe('Test Routes', () => {
   it('should create a task', async (done)=>{
     const res = await request(app)
                       .post('/task')
+                      .send(`title=${task.title}`)
                       .send(`description=${task.description}`)
                       .send(`priority=${task.priority}`)
                       .send(`user=${newUser.id}`)
                       .send(`project=${project.id}`)
                       .set('Accept', 'application/json')
                       .set('token', user.token)
-
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     task.id = res.body.task._id
