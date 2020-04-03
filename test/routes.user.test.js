@@ -4,7 +4,15 @@ const app = require('../src/server')
 let user = {
   name:'Victor Ruiz',
   email:'victor.ruiz@axity.com',
-  password:'ejemplo'
+  password:'ejemplo',
+  token: ''
+}
+
+let newUser = {
+  name:'Victor Ruiz',
+  email:'vik_ases@live.com.mx',
+  password:'ejemplo',
+  token: ''
 }
 
 const project = {
@@ -12,8 +20,10 @@ const project = {
 }
 
 const task = {
-  description:'Esta es la descripcion de la tarea.',
-  priority:3
+  title: 'Tarea 01',
+  description: 'Description tarea 1',
+  status: 'ToDo',
+  priority: 1
 }
 
 describe('Test Routes', () => {
@@ -22,28 +32,45 @@ describe('Test Routes', () => {
     await app.connectDb()
   });
 
-  it('should create an user', async (done)=>{
+  it('Test login', async (done)=>{
     const res = await request(app)
-                      .post('/user')
-                      .send(`name=${user.name}`)
+                      .post('/login')
                       .send(`email=${user.email}`)
                       .send(`password=${user.password}`)
                       .set('Accept', 'application/json')
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
-    user.id = res.body.user._id
+
+    user.token = res.body.token
+    done()
+  })
+
+  it('should create an user', async (done)=>{
+    const res = await request(app)
+                      .post('/user')
+                      .send(`name=${newUser.name}`)
+                      .send(`email=${newUser.email}`)
+                      .send(`password=${newUser.password}`)
+                      .set('Accept', 'application/json')
+                      .set('token', user.token)
+    expect(res.status).toBe(200)
+    expect(res.body.success).toBe(true)
+    newUser.id = res.body.user._id
     done()
   })
 
   it('should get the users', async  (done) => {
-    const res = await request(app).get('/user')
+    const res = await request(app)
+                      .get('/user')
+                      .set('token', user.token)
     expect(res.status).toBe(200)
     done();
   })
 
   it('should delete an user', async (done)=>{
     const res = await request(app)
-                      .delete(`/user/${user.id}`)
+                      .delete(`/user/${newUser.id}`)
+                      .set('token', user.token)
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     expect(res.body.user.state).toBe(false)
@@ -52,10 +79,12 @@ describe('Test Routes', () => {
 
   it('should update an user', async (done)=>{
     const res = await request(app)
-                      .put(`/user/${user.id}`)
-                      .send(`name=${user.name} - test`)
+                      .put(`/user/${newUser.id}`)
+                      .send(`name=${newUser.name} - test`)
                       .send(`state=true`)
                       .set('Accept', 'application/json')
+                      .set('token', user.token)
+
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     expect(res.body.user.state).toBe(true)
@@ -67,6 +96,8 @@ describe('Test Routes', () => {
                       .post('/project')
                       .send(`name=${project.name}`)
                       .set('Accept', 'application/json')
+                      .set('token', user.token)
+
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     project.id = res.body.project._id
@@ -76,6 +107,7 @@ describe('Test Routes', () => {
   it('should delete a project', async(done) =>{
     const res = await request(app)
                       .delete(`/project/${project.id}`)
+                      .set('token', user.token)
 
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
@@ -88,6 +120,8 @@ describe('Test Routes', () => {
                       .put(`/project/${project.id}`)
                       .send(`state=true`)
                       .set('Accept', 'application/json')
+                      .set('token', user.token)
+
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     expect(res.body.project.state).toBe(true)
@@ -95,7 +129,10 @@ describe('Test Routes', () => {
   })
 
   it('should get projects', async  (done) => {
-    const res = await request(app).get('/project')
+    const res = await request(app)
+                      .get('/project')
+                      .set('token', user.token)
+
     expect(res.status).toBe(200)
     done();
   })
@@ -105,9 +142,11 @@ describe('Test Routes', () => {
                       .post('/task')
                       .send(`description=${task.description}`)
                       .send(`priority=${task.priority}`)
-                      .send(`user=${user.id}`)
+                      .send(`user=${newUser.id}`)
                       .send(`project=${project.id}`)
                       .set('Accept', 'application/json')
+                      .set('token', user.token)
+
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     task.id = res.body.task._id
@@ -117,6 +156,7 @@ describe('Test Routes', () => {
   it('should delete a task', async(done) =>{
     const res = await request(app)
                       .delete(`/task/${task.id}`)
+                      .set('token', user.token)
 
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
@@ -129,6 +169,8 @@ describe('Test Routes', () => {
                       .put(`/task/${task.id}`)
                       .send(`state=true`)
                       .set('Accept', 'application/json')
+                      .set('token', user.token)
+
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     expect(res.body.task.state).toBe(true)
@@ -136,19 +178,12 @@ describe('Test Routes', () => {
   })
 
   it('should get tasks', async  (done) => {
-    const res = await request(app).get('/task')
+    const res = await request(app)
+                      .get('/task')
+                      .set('token', user.token)
+
     expect(res.status).toBe(200)
     done();
   })
 
-  it('Test login', async (done)=>{
-    const res = await request(app)
-                      .post('/login')
-                      .send(`email=${user.email}`)
-                      .send(`password=${user.password}`)
-                      .set('Accept', 'application/json')
-    expect(res.status).toBe(200)
-    expect(res.body.success).toBe(true)
-    done()
-  })
 })

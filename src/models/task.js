@@ -2,14 +2,23 @@ const {Schema, model} = require('mongoose')
 const { getDate } = require('../utils/date-util')
 
 const TaskSchema = new Schema({
+    title: {
+        type: String,
+        required: [true, 'El título es requerido']
+    },
     description: {
         type:String,
-        required:[true, 'La descripcion es requerida']
+        required:[true, 'La descripción es requerida']
     },
     priority: {
         type:Number,
         default:1,
         enum:[5,4,3,2,1]
+    },
+    status: {
+        type: String,
+        enum: ['TODO', 'DOING', 'DONE'],
+        default: 'TODO'
     },
     created: {
         type: String,

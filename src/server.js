@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const { URL } = require('./config')
 const app = express()
+const User = require('./models/user')
 app.use(cors())
 
 //Middlewares
@@ -46,6 +47,16 @@ app.connectDb = async () => {
     if(process.env.NODE_ENV === 'test'){
       await mongoose.connection.db.dropDatabase()
       console.log('Clear Database');
+
+      const user = new User({
+        name: 'Victor',
+        email: 'victor.ruiz@axity.com'
+      })
+
+      user.password = await user.encryptPassword('ejemplo')
+
+      await user.save()
+
     }
   } catch (error) {
     console.error(error.reason)

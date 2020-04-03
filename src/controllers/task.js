@@ -35,11 +35,11 @@ controller.postTask = async(req,res, next) => {
 }
 
 controller.putTask = async(req, res, next) => {
-    const {id} = req.params
+    const { id } = req.params
     const task = {description, priority, user, project} = req.body
 
     try {
-        let result = await Task.findByIdAndUpdate(id,task,{new:true})
+        let result = await Task.findByIdAndUpdate(id, task, {new:true})
         res.send({
             success:true,
             task: result
