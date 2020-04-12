@@ -59,7 +59,7 @@ app.connectDb = async () => {
 
     }
   } catch (error) {
-    console.error(error.reason)
+    console.error(error)
     process.exit(1)
   }
 }

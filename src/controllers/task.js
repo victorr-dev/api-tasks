@@ -18,9 +18,17 @@ controller.getTask = async (req, res, next) => {
 
 controller.postTask = async(req,res, next) => {
     const newTask = {description, priority, user, project} = req.body
-    try {
-        const task = new Task(newTask)
 
+    try {
+        const taskEnd = (await Task.find().sort({sort:-1})).shift()
+
+        if(taskEnd){
+            newTask.sort = taskEnd.sort + 1000
+        } else {
+            newTask.sort = 1000
+        }
+
+        const task = new Task(newTask)
         const taskSave = await task.save()
 
         res.send({
@@ -31,7 +39,6 @@ controller.postTask = async(req,res, next) => {
     } catch (error) {
         return next(Error(error.message))
     }
-
 }
 
 controller.putTask = async(req, res, next) => {
@@ -63,6 +70,14 @@ controller.deleteTask = async(req, res, next)=>{
     } catch (error) {
         return next(Error(error.message))
     }
+}
+
+controller.moveTask = async(req, res , next) => {
+    const { taskId } = req.params
+    const {beforeId} = req.body
+
+    const beforeTask = await Task.findById(beforeId)
+
 }
 
 module.exports = controller

@@ -15,6 +15,10 @@ const TaskSchema = new Schema({
         default:1,
         enum:[5,4,3,2,1]
     },
+    sort: {
+        type: Number,
+        required:[true, 'El dato sort es requerido']
+    },
     status: {
         type: String,
         enum: ['TODO', 'DOING', 'DONE'],
